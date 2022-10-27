@@ -1,4 +1,4 @@
-import { listarPasajeros, crearPasajero } from '../../../services/pasajero.services.js'
+import pasajeroService from '../../../services/pasajero.services.js'
 import { encryptPago } from '../../confBcryp.js'
 
 const infoPasajeros = [
@@ -23,7 +23,7 @@ const infoPasajeros = [
 ]
 
 export const semillaPasajeros = async () => {
-    const pasajeros = await listarPasajeros({})
+    const pasajeros = await pasajeroService.listarPasajeros({})
     if (pasajeros.length !== 0) return
-    await Promise.all([infoPasajeros.forEach(async (pasajero) => await crearPasajero(pasajero))])
+    await Promise.all([infoPasajeros.forEach(async (pasajero) => await pasajeroService.crearPasajero(pasajero))])
 }

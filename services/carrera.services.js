@@ -5,6 +5,7 @@ const crearCarrera = async (infoCarrera) => {
         const carrera = new CarreraSchema(infoCarrera)
         return await carrera.save()
     } catch (error) {
+        console.log(error)
         return null
     }
 }
@@ -19,7 +20,7 @@ const editarCarrera = async (infoCarrera) => {
 
 const buscarCarrera = async (query) => {
     try {
-        return await CarreraSchema.findOne(query)
+        return await CarreraSchema.findOne(query).lean()
     } catch (error) {
         return null
     }
@@ -27,10 +28,10 @@ const buscarCarrera = async (query) => {
 
 const listarCarreras = async (query) => {
     try {
-        return await CarreraSchema.find(query)
+        return await CarreraSchema.find(query).lean()
     } catch (error) {
         return null
     }
 }
 
-export { crearCarrera, editarCarrera, buscarCarrera, listarCarreras }
+export default { crearCarrera, editarCarrera, buscarCarrera, listarCarreras }

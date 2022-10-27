@@ -7,6 +7,9 @@ const conductorSchema = new mongoose.Schema(
             required: true,
             enum: ['DISPONIBLE', 'OCUPADO', 'FUERA DE SERVICIO']
         },
+        idCarrera: {
+            type: String
+        },
         identificacion: {
             type: Number,
             required: true
@@ -15,7 +18,7 @@ const conductorSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        ubitacionActual: {
+        ubicacionActual: {
             type: String,
             required: true
         },

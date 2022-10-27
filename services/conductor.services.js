@@ -19,7 +19,7 @@ const editarConductor = async (infoConductor) => {
 
 const buscarConductor = async (query) => {
     try {
-        return await ConductorSchema.findOne(query)
+        return await ConductorSchema.findOne(query).lean()
     } catch (error) {
         return null
     }
@@ -27,10 +27,10 @@ const buscarConductor = async (query) => {
 
 const listarConductores = async (query) => {
     try {
-        return await ConductorSchema.find(query)
+        return await ConductorSchema.find(query).lean()
     } catch (error) {
         return null
     }
 }
 
-export { crearConductor, editarConductor, buscarConductor, listarConductores }
+export default { crearConductor, editarConductor, buscarConductor, listarConductores }

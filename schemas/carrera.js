@@ -2,6 +2,14 @@ import mongoose from 'mongoose'
 
 const carreraSchema = new mongoose.Schema(
     {
+        idCarrera: {
+            type: String
+        },
+        estado: {
+            type: String,
+            default: 'EN CURSO',
+            enum: ['EN CURSO', 'CANCELADA', 'TERMINADA']
+        },
         idConductor: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,

@@ -19,7 +19,7 @@ const editarPasajero = async (infoPasajero) => {
 
 const buscarPasajero = async (query) => {
     try {
-        return await PasajeroSchema.findOne(query)
+        return await PasajeroSchema.findOne(query).lean()
     } catch (error) {
         return null
     }
@@ -27,10 +27,10 @@ const buscarPasajero = async (query) => {
 
 const listarPasajeros = async (query) => {
     try {
-        return await PasajeroSchema.find(query)
+        return await PasajeroSchema.find(query).lean()
     } catch (error) {
         return null
     }
 }
 
-export { crearPasajero, editarPasajero, buscarPasajero, listarPasajeros }
+export default { crearPasajero, editarPasajero, buscarPasajero, listarPasajeros }

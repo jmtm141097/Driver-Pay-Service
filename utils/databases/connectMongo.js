@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
-import { createVehicle, findVehiclesByQuery } from '../../services/servicesVehicle.js'
-
+import { semillaPasajeros } from './seed/pasajeros.js'
+import { semillaConductores } from './seed/conductores.js'
 export default (() => {
     try {
         mongoose.connect(process.env.DATABASE_URL)
@@ -10,14 +10,7 @@ export default (() => {
         DB.on('error', (error) => console.log('Connect to mongo error: ', error))
         DB.once('open', async () => {
             console.log('Connection to DB succesfull')
-            const vehicles = await findVehiclesByQuery()
-            if (vehicles.length === 0) {
-                await createVehicle({
-                    name: 'No tiene',
-                    typeVehicle: 'NO APLICA',
-                    color: 'NO APLICA'
-                })
-            }
+            await Promise.all([semillaPasajeros(), semillaConductores()])
         })
     } catch (error) {
         console.log('error')

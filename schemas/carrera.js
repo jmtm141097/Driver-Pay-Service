@@ -39,6 +39,10 @@ const carreraSchema = new mongoose.Schema(
         },
         ubicacionFinal: {
             type: String
+        },
+        precioTotal: {
+            type: Number,
+            default: 0
         }
     },
     {

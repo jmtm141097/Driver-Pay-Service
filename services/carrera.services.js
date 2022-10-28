@@ -20,7 +20,9 @@ const editarCarrera = async (infoCarrera) => {
 
 const buscarCarrera = async (query) => {
     try {
-        return await CarreraSchema.findOne(query).lean()
+        return await CarreraSchema.findOne(query)
+            .populate({ path: 'idPasajero', select: 'identificacion nombre metodoPago idPago' })
+            .lean()
     } catch (error) {
         return null
     }

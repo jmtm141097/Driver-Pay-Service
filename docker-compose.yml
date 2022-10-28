@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  node:
+    image: node
+    container_name: service-driver-pay
+    ports:
+      - 3001:3001
+    build: .
+    command: npm start
+  db:
+    image: mongo
+    container_name: mongo-driver-pay
+    ports:
+      - 27017:27017

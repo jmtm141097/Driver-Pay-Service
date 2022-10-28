@@ -8,11 +8,7 @@ _Estas instrucciones te permitirán obtener una copia del proyecto en funcionami
 
 ### Pre-requisitos 📋
 
-_Tener instalado Docker y copiar el archivo (.env) que adjuntare al correo_
-
-```
-Da un ejemplo
-```
+_Tener instalado Docker y copiar el archivo .env que adjuntare al correo en la raiz del proyecto _
 
 ### Instalación 🔧
 

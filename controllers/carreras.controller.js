@@ -3,6 +3,8 @@ import { v4 as uuidv4 } from 'uuid'
 import carrerasService from '../services/carrera.services.js'
 import pasajeroService from '../services/pasajero.services.js'
 import conductorService from '../services/conductor.services.js'
+import { realizarPago } from '../services/wompi.services.js'
+
 import conductorMasCercano from './helpers/conductorMasCercano.helpers.js'
 import calcularPrecioTotal from './helpers/calcularPrecioCarrera.helpers.js'
 
@@ -79,10 +81,36 @@ const finalizarCarrera = async (req, res) => {
             })
             return
         case 'TERMINADA':
-            const precioTotal = calcularPrecioTotal({ carrera: carreraEnCurso, horaFin, ubicacionFinal })
-            console.log(precioTotal)
-            res.send({
-                precioTotal
+            const { precioTotal, kmRecorridos } = calcularPrecioTotal({
+                carrera: carreraEnCurso,
+                horaFin,
+                ubicacionFinal
+            })
+            const [pagoEfectuado, _carrera, _conductor] = await Promise.all([
+                realizarPago({
+                    reference: carreraEnCurso.idCarrera,
+                    precioTotal,
+                    metodoPago: carreraEnCurso.idPasajero.metodoPago,
+                    payment_source_id: parseInt(carreraEnCurso.idPasajero.idPago)
+                }),
+                carrerasService.editarCarrera({
+                    ...carreraEnCurso,
+                    estado,
+                    horaFin,
+                    ubicacionFinal,
+                    kmRecorridos
+                }),
+                conductorService.editarConductor({ ...conductor, ubicacionFinal, estado: 'DISPONIBLE' })
+            ])
+            res.status(200).send({
+                statusCode: 200,
+                mensaje: 'Carrera finalizada',
+                infoCarrera: {
+                    statusPago: pagoEfectuado.status,
+                    idTransaccion: pagoEfectuado.id,
+                    kmRecorridos,
+                    precioTotal
+                }
             })
             return
         default:

@@ -1,4 +1,59 @@
 import CarreraSchema from '../schemas/carrera.js'
+import { realizarPago } from './wompi.services.js'
+import conductorService from './conductor.services.js'
+import calcularPrecioTotal from './helpers/calcularPrecioCarrera.helpers.js'
+
+const finalizarCarrera = async ({ conductor, estado, destino }) => {
+    const horaFin = Date.now()
+    const carreraEnCurso = await buscarCarrera({ idCarrera: conductor.idCarrera })
+
+    switch (estado) {
+        case 'CANCELADA':
+            await Promise.all([
+                editarCarrera({
+                    ...carreraEnCurso,
+                    estado,
+                    horaFin,
+                    ubicacionFinal: destino,
+                    kmRecorridos: 0
+                }),
+                conductorService.editarConductor({ ...conductor, ubicacionFinal: destino, estado: 'DISPONIBLE' })
+            ])
+            return null
+        case 'TERMINADA':
+            const { precioTotal, kmRecorridos } = calcularPrecioTotal({
+                carrera: carreraEnCurso,
+                horaFin,
+                ubicacionFinal: destino
+            })
+            const [pagoEfectuado, _carrera, _conductor] = await Promise.all([
+                realizarPago({
+                    reference: carreraEnCurso.idCarrera,
+                    precioTotal,
+                    metodoPago: carreraEnCurso.idPasajero.metodoPago,
+                    payment_source_id: parseInt(carreraEnCurso.idPasajero.idPago)
+                }),
+                editarCarrera({
+                    ...carreraEnCurso,
+                    estado,
+                    horaFin,
+                    ubicacionFinal: destino,
+                    kmRecorridos
+                }),
+                conductorService.editarConductor({ ...conductor, ubicacionFinal: destino, estado: 'DISPONIBLE' })
+            ])
+            return {
+                infoCarrera: {
+                    statusPago: pagoEfectuado.status,
+                    idTransaccion: pagoEfectuado.id,
+                    kmRecorridos: `${kmRecorridos} KM`,
+                    precioTotal
+                }
+            }
+        default:
+            return null
+    }
+}
 
 const crearCarrera = async (infoCarrera) => {
     try {
@@ -36,4 +91,4 @@ const listarCarreras = async (query) => {
     }
 }
 
-export default { crearCarrera, editarCarrera, buscarCarrera, listarCarreras }
+export default { crearCarrera, editarCarrera, buscarCarrera, listarCarreras, finalizarCarrera }

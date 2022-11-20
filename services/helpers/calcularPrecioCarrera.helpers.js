@@ -25,5 +25,5 @@ export default ({ carrera, horaFin, ubicacionFinal }) => {
         kmRecorridos * 1000 +
         (parseInt(horas) > 0 ? (parseInt(horas) * 60 + parseInt(minutos)) * 200 : parseInt(minutos) * 200)
 
-    return { precioTotal: Math.round((precioTotal + Number.EPSILON) * 100) / 100, kmRecorridos }
+    return { precioTotal: Math.round((precioTotal + Number.EPSILON) * 100) / 100, kmRecorridos: Math.round((kmRecorridos + Number.EPSILON) * 100) / 100 }
 }

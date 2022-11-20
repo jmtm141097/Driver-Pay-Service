@@ -23,8 +23,7 @@ const valSolicitarConductor = validationMiddleware([
         .isLatLong()
         .withMessage(`La ubicacion debe estar expresada de la siguiente manera (2.937043, -75.296442)`),
     body('vehiculo')
-        .exists()
-        .withMessage('El vehiculo es obligatorio')
+        .optional()
         .isIn(['CARRO', 'MOTO', 'BICICLETA'])
         .withMessage("El vehiculo debe ser 'CARRO' - 'MOTO' - 'BICICLETA'")
 ])

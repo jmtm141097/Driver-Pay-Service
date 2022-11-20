@@ -8,13 +8,13 @@ const infoPasajeros = [
         idPago: 42418
     },
     {
-        identificacion: 1084869583,
+        identificacion: 165523148,
         nombre: 'Daniela Pedraza Veloza',
         metodoPago: 'CARD',
         idPago: 42494
     },
     {
-        identificacion: 1084869583,
+        identificacion: 164121645,
         nombre: 'Eduar Motta',
         metodoPago: 'NEQUI',
         idPago: 42499

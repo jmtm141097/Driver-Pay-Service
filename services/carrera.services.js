@@ -77,6 +77,7 @@ const buscarCarrera = async (query) => {
     try {
         return await CarreraSchema.findOne(query)
             .populate({ path: 'idPasajero', select: 'identificacion nombre metodoPago idPago' })
+            .populate({ path: 'idConductor', select: '-_id identificacion nombreCompleto ubicacionActual vehiculo' })
             .lean()
     } catch (error) {
         return null

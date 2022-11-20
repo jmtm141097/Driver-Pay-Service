@@ -4,12 +4,7 @@ import carreraServices from './carrera.services.js'
 
 import buscarConductorMasCercano from './helpers/conductorMasCercano.helpers.js'
 
-const conductorMasCercano = async ({ idCarrera, identificacionPasajero, ubicacionPasajero, tipoVehiculo }) => {
-    const [conductoresDisponibles, pasajero] = await Promise.all([
-        listarConductores({ estado: 'DISPONIBLE', vehiculo: tipoVehiculo }),
-        pasajeroServices.buscarPasajero({ identificacion: identificacionPasajero })
-    ])
-
+const conductorMasCercano = async ({ idCarrera, ubicacionPasajero, conductoresDisponibles, pasajero }) => {
     const conductorCercano = buscarConductorMasCercano({
         conductores: conductoresDisponibles,
         ubicacionUsuario: ubicacionPasajero

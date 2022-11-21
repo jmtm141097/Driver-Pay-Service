@@ -3,6 +3,8 @@ import './utils/databases/connectMongo.js'
 
 const port = process.env.PORT || 3002
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log('Running in http://localhost:' + port)
 })
+
+export default server

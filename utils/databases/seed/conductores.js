@@ -1,6 +1,7 @@
 import conductorService from '../../../services/conductor.services.js'
+import conductorModel from '../../../schemas/conductor.js'
 
-const infoConductores = [
+export const infoConductores = [
     {
         estado: 'DISPONIBLE',
         identificacion: 6451648,
@@ -27,5 +28,5 @@ const infoConductores = [
 export const semillaConductores = async () => {
     const conductores = await conductorService.listarConductores({})
     if (conductores.length !== 0) return
-    await Promise.all([infoConductores.forEach(async (conductor) => await conductorService.crearConductor(conductor))])
+    await conductorModel.insertMany(infoConductores)
 }

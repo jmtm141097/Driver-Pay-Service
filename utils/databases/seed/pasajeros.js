@@ -1,6 +1,7 @@
 import pasajeroService from '../../../services/pasajero.services.js'
+import pasajeroModel from '../../../schemas/pasajero.js'
 
-const infoPasajeros = [
+export const infoPasajeros = [
     {
         identificacion: 1084869583,
         nombre: 'Juan Manuel Tamayo Monje',
@@ -24,5 +25,5 @@ const infoPasajeros = [
 export const semillaPasajeros = async () => {
     const pasajeros = await pasajeroService.listarPasajeros({})
     if (pasajeros.length !== 0) return
-    await Promise.all([infoPasajeros.forEach(async (pasajero) => await pasajeroService.crearPasajero(pasajero))])
+    await pasajeroModel.insertMany(infoPasajeros)
 }

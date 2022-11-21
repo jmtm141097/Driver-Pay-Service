@@ -1,14 +1,22 @@
 version: '3.9'
 
 services:
+  node-test:
+    container_name: service-driver-pay-test
+    ports:
+      - 3002:3001
+    build: .
+    command: npm run test
+    depends_on:
+      - db
   node:
     container_name: service-driver-pay
     ports:
       - 3001:3001
     build: .
-    command: npm start
-    volumes:
-      - .:/usr/src/back-driver-pay-service
+    command: npm run start
+    depends_on:
+      - node-test
   db:
     image: mongo
     container_name: mongo-driver-pay

@@ -5,13 +5,18 @@ import calcularPrecioTotal from './helpers/calcularPrecioCarrera.helpers.js'
 
 const finalizarCarrera = async ({ conductor, estado, destino }) => {
     const horaFin = Date.now()
-    const carreraEnCurso = await buscarCarrera({ idCarrera: conductor.idCarrera })
+    const carreraEnCurso = await buscarCarrera({ idCarrera: conductor.idCarrera, estado: 'EN CURSO' })
+
+    if (!carreraEnCurso)
+        return {
+            status: 'SIN CARRERA'
+        }
 
     switch (estado) {
         case 'CANCELADA':
             await Promise.all([
                 editarCarrera({
-                    ...carreraEnCurso,
+                    _id: carreraEnCurso._id,
                     estado,
                     horaFin,
                     ubicacionFinal: destino,
@@ -19,7 +24,9 @@ const finalizarCarrera = async ({ conductor, estado, destino }) => {
                 }),
                 conductorService.editarConductor({ ...conductor, ubicacionFinal: destino, estado: 'DISPONIBLE' })
             ])
-            return null
+            return {
+                status: 'CANCELADA'
+            }
         case 'TERMINADA':
             const { precioTotal, kmRecorridos } = calcularPrecioTotal({
                 carrera: carreraEnCurso,
@@ -34,7 +41,7 @@ const finalizarCarrera = async ({ conductor, estado, destino }) => {
                     payment_source_id: parseInt(carreraEnCurso.idPasajero.idPago)
                 }),
                 editarCarrera({
-                    ...carreraEnCurso,
+                    _id: carreraEnCurso._id,
                     estado,
                     horaFin,
                     ubicacionFinal: destino,
@@ -43,6 +50,7 @@ const finalizarCarrera = async ({ conductor, estado, destino }) => {
                 conductorService.editarConductor({ ...conductor, ubicacionFinal: destino, estado: 'DISPONIBLE' })
             ])
             return {
+                status: 'TERMINADA',
                 infoCarrera: {
                     statusPago: pagoEfectuado.status,
                     idTransaccion: pagoEfectuado.id,
@@ -51,7 +59,9 @@ const finalizarCarrera = async ({ conductor, estado, destino }) => {
                 }
             }
         default:
-            return null
+            return {
+                status: 'FAIL'
+            }
     }
 }
 
@@ -60,7 +70,6 @@ const crearCarrera = async (infoCarrera) => {
         const carrera = new CarreraSchema(infoCarrera)
         return await carrera.save()
     } catch (error) {
-        console.log(error)
         return null
     }
 }

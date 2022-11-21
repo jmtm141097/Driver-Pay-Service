@@ -53,18 +53,30 @@ const finalizarCarrera = async (req, res) => {
 
     const infoCarrera = await carrerasService.finalizarCarrera({ conductor, estado, destino: ubicacionFinal })
 
-    if (infoCarrera) {
-        return res.status(200).send({
-            statusCode: 200,
-            mensaje: 'Carrera finalizada',
-            ...infoCarrera
-        })
-    }
+    switch (infoCarrera.status) {
+        case 'CANCELADA':
+            return res.status(200).send({
+                statusCode: 200,
+                mensaje: 'La carrera ha sido cancelada'
+            })
+        case 'TERMINADA':
+            return res.status(200).send({
+                statusCode: 200,
+                mensaje: 'Carrera finalizada',
+                carrera: infoCarrera.infoCarrera
+            })
+        case 'SIN CARRERA':
+            return res.status(400).send({
+                statusCode: 400,
+                mensaje: 'No tienes una carrera en curso'
+            })
 
-    res.status(200).send({
-        statusCode: 200,
-        mensaje: 'La carrera ha sido cancelada'
-    })
+        default:
+            return res.status(500).send({
+                statusCode: 500,
+                mensaje: 'Error interno en el servidor'
+            })
+    }
 }
 
 export default {
